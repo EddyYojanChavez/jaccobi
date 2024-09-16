@@ -1,0 +1,40 @@
+import numpy as np
+
+# Función para aplicar el método de Jacobi
+def jacobi(A, b, x_init, tol=1e-10, max_iter=1000):
+    n = len(b)
+    x = x_init.copy()
+    x_new = np.zeros_like(x)
+    
+    for k in range(max_iter):
+        for i in range(n):
+            s = sum(A[i][j] * x[j] for j in range(n) if j != i)
+            x_new[i] = (b[i] - s) / A[i][i]
+        
+        # Verificar si la solución ha convergido
+        if np.allclose(x, x_new, atol=tol):
+            print(f"Converged in {k} iterations.")
+            break
+        x = x_new.copy()
+    
+    return x
+
+# Coeficientes de las ecuaciones
+A = np.array([[0.52, 0.20, 0.25],
+              [0.30, 0.50, 0.20],
+              [0.18, 0.30, 0.55]])
+
+# Requerimientos (lado derecho de las ecuaciones)
+b = np.array([4800, 5810, 5690])
+
+# Valor inicial (suponemos que empezamos con 0 en todas las variables)
+x_init = np.zeros(len(b))
+
+# Llamar al método de Jacobi
+solucion = jacobi(A, b, x_init)
+
+# Imprimir los resultados
+print("La cantidad de metros cúbicos que se debe transportar de cada cantera es:")
+print(f"Cantera 1: {solucion[0]:.2f} m³")
+print(f"Cantera 2: {solucion[1]:.2f} m³")
+print(f"Cantera 3: {solucion[2]:.2f} m³")
